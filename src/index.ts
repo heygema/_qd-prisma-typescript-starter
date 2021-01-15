@@ -1,6 +1,7 @@
-import gql from "graphql-tag";
 import prisma from "./prismaClient";
-import { GraphQLServer } from "graphql-yoga";
+import express from "express";
+import http from "http";
+import { ApolloServer, gql } from "apollo-server-express";
 
 const typeDefs = gql`
   type Query {
@@ -24,8 +25,12 @@ const resolvers = {
   }
 };
 
-const server = new GraphQLServer({ typeDefs, resolvers });
+const apolloServer = new ApolloServer({ typeDefs, resolvers });
+let app = express();
+apolloServer.applyMiddleware({ app });
+let server = http.createServer(app);
 
-server.start(({ port }) => {
-  console.log(`Server running on http://localhost${port}`);
+
+server.listen(4000, () => {
+  console.log(`Server running on http://localhost${4000}`);
 });
